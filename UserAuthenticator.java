@@ -1,3 +1,4 @@
+package Server;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
@@ -35,6 +36,16 @@ public interface UserAuthenticator extends Remote {
      * @throws RemoteException
      * 
      */
-    public boolean loginUser(String username, String passwonrd) throws RemoteException;
+    public boolean loginUser(String username, String password) throws RemoteException;
 
+    /**
+     * 
+     * @fun                             logout
+     * @brief                           Effettua logout sul server per l'utente
+     * @param username                  Username dell'utente
+     * @param password                  Password utente
+     * @throws RemoteException          
+     * 
+     */
+    public void logout(String username, String password) throws RemoteException;
 }

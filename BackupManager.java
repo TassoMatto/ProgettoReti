@@ -1,14 +1,18 @@
+package Server;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.List;
-
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.JsonToken;            
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 /**
@@ -92,7 +96,40 @@ public class BackupManager {
         }
 
         return databaseUtenti;
-        
+    }
+
+    /**
+     * 
+     * @fun                                 updateDatabase
+     * @brief                               Aggiorna il contenuto del file di salvataggio degli utenti
+     * @param listaUtenti                   Lista di utenti da salvare
+     * @throws IllegalArgumentException
+     * 
+     */
+    public void updateDatabase(LinkedList<Utente> listaUtenti) {
+
+        /** Controllo argomenti */
+        if((listaUtenti == null) || (listaUtenti.size() == 0)) throw new IllegalArgumentException();
+
+        /** Se non esiste, creo file Json */
+        File fileJson = new File(this.JsonFilePath);
+        if(fileJson.exists()) fileJson.delete();
+        try {
+            fileJson.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.enable(SerializationFeature.INDENT_OUTPUT);
+        mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        try (DataOutputStream dout = new DataOutputStream(new FileOutputStream(fileJson))) {
+            dout.writeBytes(mapper.writeValueAsString(listaUtenti));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+
     }
     
 }
